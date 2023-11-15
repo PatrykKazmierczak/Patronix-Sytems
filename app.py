@@ -32,7 +32,6 @@ class RegisterForm(FlaskForm):
 
 login_manager = LoginManager(app)
 
-    
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -42,12 +41,15 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        if user and check_password_hash(user.password, form.password.data):
-            login_user(user)
-            return redirect(url_for('dashboard'))
-        else:
-            flash('Invalid username or password. Please try again.')
-    return render_template('login.html', form=form)
+        if user:
+            print("User exists")  # Debugging line
+            if check_password_hash(user.password, form.password.data):
+                print("Password is correct")  # Debugging line
+                login_user(user)
+                print("User logged in successfully")  # Debugging line
+                return redirect(url_for('dashboard'))
+        flash('Invalid username or password. Please try again.')
+    return render_template('login.html', login_form=form)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -57,13 +59,13 @@ def register():
         if user:
             flash('User already exists. Please login.')
         else:
-            hashed_password = generate_password_hash(form.password.data, method='sha256')
+            hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
             new_user = User(username=form.username.data, password=hashed_password)
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user)
             return redirect(url_for('dashboard'))
-    return render_template('register.html', form=form)
+    return render_template('register.html', register_form=form)
 
 @app.route('/logout')
 @login_required
@@ -71,10 +73,14 @@ def logout():
     logout_user()
     return redirect(url_for('login'))  # Redirect to 'login' route after logout
 
+@app.route('/')
+def home():
+    return redirect(url_for('login'))
+
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return "Welcome to the dashboard!"
+    return render_template('dashboard.html')
 
 if __name__ == '__main__':
     with app.app_context():
