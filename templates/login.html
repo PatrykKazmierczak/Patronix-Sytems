@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-3">
+                <div class="card mt-5">
+                    <div class="card-body">
+                        <img src="/static/logo.png" alt="PS Logo" width="150" height="25" class="mx-auto d-block">
+                        <h5 class="card-title text-center mt-3">Login</h5>
+                        <form method="POST">
+                            {{ login_form.hidden_tag() }}
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                {{ login_form.username(class="form-control", id='username') }}
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                {{ login_form.password(class="form-control", id='password') }}
+                            </div>
+                            <input type="submit" name="login_submit" value="Login" class="btn btn-primary btn-block">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
