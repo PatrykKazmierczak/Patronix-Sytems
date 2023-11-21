@@ -41,15 +41,14 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        if user:
-            print("User exists")  # Debugging line
-            if check_password_hash(user.password, form.password.data):
-                print("Password is correct")  # Debugging line
-                login_user(user)
-                print("User logged in successfully")  # Debugging line
-                return redirect(url_for('dashboard'))
-        flash('Invalid username or password. Please try again.')
-    return render_template('login.html', login_form=form)
+        if user and check_password_hash(user.password, form.password.data):
+            login_user(user)
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('dashboard'))
+        else:
+            flash('User does not exist. Please register first.', 'danger')
+            return redirect(url_for('register'))
+    return render_template('login.html', title='Login', login_form=form)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
