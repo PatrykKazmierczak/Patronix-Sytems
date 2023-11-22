@@ -6,7 +6,7 @@ from wtforms.validators import DataRequired, Length, EqualTo
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 import secrets
-from flask_login import LoginManager
+import subprocess
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = secrets.token_hex(16)
@@ -18,6 +18,10 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
+
+class ScriptOutput(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    output = db.Column(db.String(500))
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=4, max=30)])
@@ -76,10 +80,46 @@ def logout():
 def home():
     return redirect(url_for('login'))
 
+@app.route('/run_first_script')
+@login_required
+def run_first_script():
+    # Run the first PowerShell script and capture the output
+    result = subprocess.run(["powershell.exe", "./scripts/Get-ADComputersExportToSQL.ps1"], shell=True, capture_output=True, text=True)
+
+    # Create a new model instance with the script output
+    model_instance = ScriptOutput(output=result.stdout)
+
+    # Add the new model instance to the session and commit it to the database
+    db.session.add(model_instance)
+    db.session.commit()
+
+    return redirect(request.referrer)
+
+@app.route('/run_second_script')
+@login_required
+def run_second_script():
+    # Run the second PowerShell script and capture the output
+    result = subprocess.run(["powershell.exe", "./sripts/Get-ADUsersExportToSQLOnPremUpdate.ps1"], shell=True, capture_output=True, text=True)
+
+    # Create a new model instance with the script output
+    model_instance = ScriptOutput(output=result.stdout)
+
+    # Add the new model instance to the session and commit it to the database
+    db.session.add(model_instance)
+    db.session.commit()
+
+    return redirect(request.referrer)
+
+# ... the rest of your Flask app code ...
+
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html')
+    # Query the ScriptOutput table
+    script_outputs = ScriptOutput.query.all()
+    return render_template('dashboard.html', script_outputs=script_outputs)
+
+# ... the rest of your Flask app code ...
 
 if __name__ == '__main__':
     with app.app_context():
