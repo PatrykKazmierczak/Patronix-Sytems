@@ -125,3 +125,10 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()  # Create database if it does not exist
     app.run(host='0.0.0.0', port=8000, debug=True)
+    
+import os
+
+# Get the absolute path of the directory that contains the file app.py
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+app = Flask(__name__, template_folder=os.path.join(basedir, 'templates'))
