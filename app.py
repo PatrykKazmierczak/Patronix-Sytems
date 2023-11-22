@@ -74,7 +74,7 @@ def register():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('login'))  # Redirect to 'login' route after logout
+    return redirect(url_for('login'))
 
 @app.route('/')
 def home():

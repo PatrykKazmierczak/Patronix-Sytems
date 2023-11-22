@@ -7,21 +7,18 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">My Dashboard</a>
+        <a class="navbar-brand" href="#">AD-Export-Tool</a>
+        <!-- Add your buttons here -->
+        <a href="{{ url_for('run_first_script') }}" class="btn btn-primary ml-2">Run Get-ADUsers</a>
+        <a href="{{ url_for('run_second_script') }}" class="btn btn-secondary ml-2">Run Get-ADUsers</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Logout</a>
-                </li>
-                <!-- Add your buttons here -->
-                <li class="nav-item">
-                    <button class="btn btn-primary my-2 my-sm-0" type="button">Button 1</button>
-                </li>
-                <li class="nav-item">
-                    <button class="btn btn-secondary my-2 my-sm-0" type="button">Button 2</button>
+                    <!-- Update this line -->
+                    <a class="btn btn-danger" href="{{ url_for('logout') }}">Logout</a>
                 </li>
             </ul>
         </div>
@@ -29,19 +26,14 @@
 
     <!-- ... your existing HTML code ... -->
 
-    <!-- ... your existing HTML code ... -->
-
-    <!-- ... your existing HTML code ... -->
+    <div class="container mt-5">
+        <div class="row">
 
     <div class="container mt-5">
         <div class="row">
             <div class="col-12">
                 <h1 class="display-4">Welcome to the dashboard!</h1>
                 <hr class="my-4">
-                <!-- Add your dashboard content here -->
-                <a href="{{ url_for('run_first_script') }}" class="btn btn-primary">Run Get-ADUsersExportToSQLOnPrem.ps1</a>
-                <a href="{{ url_for('run_second_script') }}" class="btn btn-secondary">Run Get-ADUsersExportToSQLOnPremUpdate.ps1</a>
-
                 <!-- Display the script outputs -->
                 <h2 class="mt-5">Script Outputs</h2>
                 <ul>
